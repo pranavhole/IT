@@ -2,6 +2,9 @@
   "name": "minor-project",
   "version": "1.0.0",
   "main": "server.js",
+  "engines": {
+    "node": ">=14.20.1"
+  },
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
