@@ -3,7 +3,7 @@ document.getElementById('register-form').addEventListener('submit', (event) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
   
-    fetch('http://localhost:3000/register', {
+    fetch('https://it-fu6m.onrender.com/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),

@@ -2,7 +2,7 @@ const usernameElement = document.getElementById('username');
 const createPostForm = document.getElementById('createPostForm');
 const userPostsContainer = document.getElementById('userPosts');
 const trending = document.getElementsByClassName('div1');
-
+const setting=document.getElementById('setting');
 
 // Get username from URL parameter
 
@@ -11,7 +11,9 @@ const username = urlParams.get('username');
 usernameElement.textContent = username;
 
 // Event listener for create post form submission
-
+setting.addEventListener('click',(e)=>{
+  location.href = `setting.html?username=${username}`;
+})
 createPostForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -19,7 +21,7 @@ createPostForm.addEventListener('submit', (e) => {
   const post = document.getElementById('post').value;
 
   // Send post data to the server
-  fetch('http://127.0.0.1:3000/posts/create', {
+  fetch('https://it-fu6m.onrender.com/posts/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,7 +44,7 @@ createPostForm.addEventListener('submit', (e) => {
 });
 
 function fetchUserPosts() {
-  fetch(`http://127.0.0.1:3000/posts/user/${username}`)
+  fetch(`https://it-fu6m.onrender.com/posts/user/${username}`)
     .then((response) => response.json())
     .then((data) => {
       userPostsContainer.innerHTML = '';
@@ -51,14 +53,21 @@ function fetchUserPosts() {
         const postElement = document.createElement('div');
         postElement.classList.add('post');
         postElement.innerHTML = `
-          <h3>Topic: ${post.topic}</h3>
-          <p>${post.post}</p>
-          <button class="likeBtn">Like (${post.likes})</button>
-          <button class="commentBtn">Comment</button>
-          <div class="comments">
-            ${getCommentsHTML(post.comments)}
-          </div>
-          <hr>
+        <div class="form-container">
+  <h3 style="color: #333; font-size: 24px; margin-bottom: 10px;">User: ${post.user.username}</h3>
+  <h3 class="topic">Topic: ${post.topic}</h3><p>
+  <span><b>Post : </b> </span>
+  ${post.post}</p>
+  <button class="likeBtn">Like (${post.likes})</button>
+  <button class="commentBtn">Comment</button>
+  <div class="comments">
+    ${getCommentsHTML(post.comments)}
+  </div>
+  <hr>
+</div>
+
+      
+
         `;
 
         userPostsContainer.appendChild(postElement);
@@ -94,11 +103,10 @@ function getCommentsHTML(comments) {
   });
   return html;
 }
-
 // Function to like a post
 function likePost(postId) {
   const user = username;
-  fetch(`http://127.0.0.1:3000/posts/like/${postId}`, {
+  fetch(`https://it-fu6m.onrender.com/posts/like/${postId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -120,7 +128,7 @@ function likePost(postId) {
 // Function to add a comment to a post
 function addComment(postId, comment) {
   const user = username;
-  fetch(`http://127.0.0.1:3000/posts/comment/${postId}`, {
+  fetch(`https://it-fu6m.onrender.com/posts/comment/${postId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +150,7 @@ const postsContainer = document.getElementById('postsContainer');
 
 // Fetch all posts
 function allpost() {
-  fetch('http://localhost:3000/posts/all')
+  fetch('https://it-fu6m.onrender.com/posts/all')
     .then((response) => response.json())
     .then((posts) => {
       postsContainer.innerHTML = '';
@@ -151,14 +159,18 @@ function allpost() {
         const postElement = document.createElement('div');
         postElement.classList.add('post');
         postElement.innerHTML = `
-        <h3>Topic: ${post.topic}</h3>
-        <p>${post.post}</p>
-        <button class="likeBtn" data-postid="${post._id}">Like (${post.likes})</button>
-        <button class="commentBtn" data-postid="${post._id}">Comment</button>
-        <div class="comments">
-          ${getCommentsHTML(post.comments)}
-        </div>
-        <hr>
+        <div class="form-container">
+  <h3 style="color: #333; font-size: 24px; margin-bottom: 10px;">User: ${post.user.username}</h3>
+  <h3 class="topic">Topic: ${post.topic}</h3><p>
+  <span><b>Post : </b> </span>
+  ${post.post}</p>
+  <button class="likeBtn">Like (${post.likes})</button>
+  <button class="commentBtn">Comment</button>
+  <div class="comments">
+    ${getCommentsHTML(post.comments)}
+  </div>
+  <hr>
+</div>
       `;
 
         postsContainer.appendChild(postElement);

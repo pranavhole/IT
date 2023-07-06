@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 
 const corsOptions = {
   origin: '*',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST','DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://ITproject:ITproject@cluster0.bjoglyj.mongodb.net/', {
+mongoose.connect('mongodb://127.0.0.1:27017/myapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -197,7 +197,14 @@ app.get('/posts/all', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch posts' });
   }
 });
-
+app.post('/delete',async(req,res)=>{
+  const {username} = req.params;
+  await usersCollection.deleteOne({ username: username }, function(err, result) {
+    if (err) {
+      console.error('Error deleting user:', err);
+      return;
+    }
+})});
 // Get posts by username
 app.get('/posts/user/:username', async (req, res) => {
   const { username } = req.params;

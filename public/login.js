@@ -1,10 +1,11 @@
 let user;
+window.myApp = window.myApp || {};
 document.getElementById('login-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-  
-    fetch('http://localhost:3000/login', {
+    window.myApp.user=username;
+    fetch('https://it-fu6m.onrender.com/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),

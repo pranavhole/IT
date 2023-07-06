@@ -34,6 +34,10 @@
       border-radius: 5px;
     }
 
+    .topic {
+      color: red;
+    }
+
     .options ul {
       list-style-type: none;
       margin: 0;
@@ -83,6 +87,64 @@
       margin-bottom: 10px;
     }
 
+    .form-container {
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.form-container h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.form-container p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.form-container button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.form-container button:hover {
+  background-color: #45a049;
+}
+
+.form-container .comments {
+  margin-top: 20px;
+}
+
+.form-container .comments p {
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.form-container hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+}
+
     .section ul {
       list-style-type: none;
       padding: 0;
@@ -121,52 +183,44 @@
     <div id="home"><a href="#">HOME</a></div>
     <div id="allpost"><a href="#">Trending</a></div>
     <a href="#">Groups</a>
-    <a href="#">Settings</a>
+    <div id="setting">Settings</a>
     <a href="#">Contact Us</a>
-    <a href="#">About</a>
-    <a href="http://127.0.0.1:5500/login.html" class="button">Logout</a>
+    <a href="aboutus.html">About</a>
+    <a href="login.html" class="button">Logout</a>
   </nav>
   <main>
-    <div class="user div1">
+    <div style="
+    display: flex;
+">
+    <div class="user div1" style="
+    margin: 2rem;
+">
       <h3 class="userName" id="username"></h3>
-      <form class="form" id="createPostForm">
-        Topic: <input type="text" id="topic">
-        <textarea name="tweet" placeholder="Type your thoughts" id="post" required></textarea>
-        <button type="submit" class="submit">Submit</button>
+      <form class="form" id="createPostForm" style="display: block;">
+        <div>
+          <span>Topic: </span><input type="text" id="topic">
+        </div>
+        <br>
+        <div>
+          <textarea name="tweet" placeholder="Type your thoughts" id="post" required></textarea>
+          <button type="submit" class="submit">Submit</button>
+        </div>
       </form>
     </div>
 
 
     <!-- <hr> -->
-    <div id="userPosts div2"></div>
-
+    <div style="
+    width: 55%;
+    margin-top: 2rem;
+">
+    <div><h1>My post</h1></div>
+    <div id="userPosts" >
+</div>
+</div>
+  </div>
     <h1>All post</h1>
     <div id="postsContainer"></div>
-    <div class="content">
-      <h3 class="name"><b> Michael</b></h3>
-      <h4 class="topic"> Topic: Physics</h4>
-      <div class="box">
-
-        <p><i><--------------content about the topic--------------></i></p>
-        <!-- <br>   -->
-        <div class="br">
-          <br>
-          <br>
-          <br>
-          <br>
-        </div>
-
-      </div>
-      <button onclick="showOptions('button2', 'options2')" class="more">More</button>
-      <div id="options2" class="options">
-        <ul>
-          <li><input type="button" value="Upvote"></li>
-          <li><input type="button" value="Comment/Reply"></li>
-          <li><input type="button" value="Report"></li>
-        </ul>
-      </div>
-    </div>
-
 
 
   </main>
