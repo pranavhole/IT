@@ -2,8 +2,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('username');
 const deleteUser= document.getElementById('delete')
 console.log(username);
-deleteUser.addEventListener('click',(e)=>{
-    fetch('https://localhost:3000/delete', {
+const deleteMe=()=>{
+  fetch(`https://it-fu6m.onrender.com/delete/${username}`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -19,4 +19,4 @@ deleteUser.addEventListener('click',(e)=>{
   .catch(error => {
     console.error('Error deleting user:', error);
   });
-})
+}

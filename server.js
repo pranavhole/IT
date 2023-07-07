@@ -7,7 +7,9 @@ import cors from 'cors';
 
 const app = express();
 app.use((req, res, next) => {
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   next();
 });
 
@@ -17,7 +19,6 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
-
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -63,6 +64,7 @@ const Like = mongoose.model('Like', likeSchema);
 const Comment = mongoose.model('Comment', commentSchema);
 
 // Registration
+
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -197,14 +199,25 @@ app.get('/posts/all', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch posts' });
   }
 });
-app.post('/delete',async(req,res)=>{
-  const {username} = req.params;
-  await usersCollection.deleteOne({ username: username }, function(err, result) {
-    if (err) {
-      console.error('Error deleting user:', err);
-      return;
+app.delete('/delete/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const deletedUser = await User.findOneAndDelete({ username });
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-})});
+
+    // Delete related posts
+    await Post.deleteMany({ user: deletedUser._id });
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ message: 'Failed to delete user' });
+  }
+});
+
 // Get posts by username
 app.get('/posts/user/:username', async (req, res) => {
   const { username } = req.params;
