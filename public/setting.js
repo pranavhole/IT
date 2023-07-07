@@ -4,7 +4,7 @@ const deleteUser= document.getElementById('delete')
 console.log(username);
 const deleteMe=()=>{
   fetch(`https://it-fu6m.onrender.com/delete/${username}`, {
-  method: 'POST',
+  method: 'DELETE',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,8 +15,11 @@ const deleteMe=()=>{
       throw new Error('Failed to delete user');
     }
     console.log('User deleted successfully');
+    alert(`user : ${username} deteted successfully `)
+    location.href="./login.html" ;
   })
   .catch(error => {
     console.error('Error deleting user:', error);
   });
+   
 }

@@ -100,7 +100,27 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Failed to login' });
   }
 });
+app.delete('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
 
+  try {
+    const deletedPost = await Post.findByIdAndDelete(postId);
+    if (!deletedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Delete related likes
+    await Like.deleteMany({ post: postId });
+
+    // Delete related comments
+    await Comment.deleteMany({ post: postId });
+
+    res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting post:', err);
+    res.status(500).json({ message: 'Failed to delete post' });
+  }
+});
 // Create a new post
 app.post('/posts/create', async (req, res) => {
   const { post, user, topic } = req.body;
