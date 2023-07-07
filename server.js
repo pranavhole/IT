@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/myapp', {
+mongoose.connect('mongodb+srv://ITproject:ITproject@cluster0.bjoglyj.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
