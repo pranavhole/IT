@@ -100,6 +100,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Failed to login' });
   }
 });
+
 app.delete('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
 
@@ -121,6 +122,7 @@ app.delete('/posts/:postId', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete post' });
   }
 });
+
 // Create a new post
 app.post('/posts/create', async (req, res) => {
   const { post, user, topic } = req.body;
@@ -141,7 +143,6 @@ app.post('/posts/create', async (req, res) => {
   }
 });
 
-// Like a post
 // Like a post
 app.post('/posts/like/:postId', async (req, res) => {
   const { postId } = req.params;
@@ -177,6 +178,7 @@ app.post('/posts/like/:postId', async (req, res) => {
   }
 });
 
+// Comment on 
 // Comment on a post
 app.post('/posts/comment/:postId', async (req, res) => {
   const { postId } = req.params;
@@ -196,10 +198,13 @@ app.post('/posts/comment/:postId', async (req, res) => {
     const newComment = new Comment({ user: foundUser._id, post: postId, comment });
     await newComment.save();
 
+    // Populate the comment with user details including username
+    await newComment.populate('user', 'username').execPopulate();
+
     post.comments.push(newComment);
     await post.save();
 
-    res.status(200).json({ message: 'Comment added successfully' });
+    res.status(200).json({ message: 'Comment added successfully', comment: newComment });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to add comment' });
@@ -211,51 +216,18 @@ app.get('/posts/all', async (req, res) => {
   try {
     const posts = await Post.find()
       .populate('user', 'username')
-      .populate('comments', 'comment');
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      });
 
     res.status(200).json(posts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to fetch posts' });
-  }
-});
-app.delete('/delete/:username', async (req, res) => {
-  const { username } = req.params;
-
-  try {
-    const deletedUser = await User.findOneAndDelete({ username });
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Delete related posts
-    await Post.deleteMany({ user: deletedUser._id });
-
-    res.status(200).json({ message: 'User deleted successfully' });
-  } catch (err) {
-    console.error('Error deleting user:', err);
-    res.status(500).json({ message: 'Failed to delete user' });
-  }
-});
-
-// Get posts by username
-app.get('/posts/user/:username', async (req, res) => {
-  const { username } = req.params;
-
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const posts = await Post.find({ user: user._id })
-      .populate('user', 'username')
-      .populate('comments', 'comment');
-
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to fetch user posts' });
   }
 });
 

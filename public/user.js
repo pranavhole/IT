@@ -101,16 +101,10 @@ function fetchUserPosts() {
 }
 
 // Function to generate HTML for comments
-function getCommentsHTML(comments) {
+// Function to generate HTML for comments
 
-  let html = '';
-  comments.forEach((comment) => {
-    console.log(comment.comment)
-    html += `<p>${comment.comment}</p>`;
-  });
-  return html;
-}
-// Function to like a post
+
+// Function to like a post 
 function likePost(postId) {
   const user = username;
   fetch(`https://it-fu6m.onrender.com/posts/like/${postId}`, {
@@ -205,12 +199,23 @@ function allpost() {
 }
 
 // Function to generate HTML for comments
-function getCommentsHTML(comments) {
+async function getCommentsHTML(comments) {
   let html = '';
-  comments.forEach((comment) => {
-    html += `<p>${comment.comment}</p>`;
-  });
+  for (const comment of comments) {
+    const user = await fetchUser(comment._id);
+    html += `
+      <p>Comment: ${console.log(comment.comment)}</p>
+      <p>Username: ${console.log(user.username)}</p>
+    `;
+  }
   return html;
+}
+
+// Fetch user data based on userId
+async function fetchUser(userId) {
+  const response = await fetch(`https://it-fu6m.onrender.com/user/${userId}`);
+  const data = await response.json();
+  return data;
 }
 
 // Function to like a post
