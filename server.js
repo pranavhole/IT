@@ -199,7 +199,13 @@ app.get('/posts/all', async (req, res) => {
   try {
     const posts = await Post.find()
       .populate('user', 'username')
-      .populate('comments', 'comment');
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      });
 
     res.status(200).json(posts);
   } catch (err) {
@@ -238,9 +244,15 @@ app.get('/posts/user/:username', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const posts = await Post.find({ user: user._id })
+    const posts = await Post.find({user: user._id})
       .populate('user', 'username')
-      .populate('comments', 'comment');
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username'
+        }
+      });
 
     res.status(200).json(posts);
   } catch (error) {

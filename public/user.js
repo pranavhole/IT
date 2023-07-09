@@ -168,6 +168,7 @@ function allpost() {
   <button class="likeBtn">Like (${post.likes})</button>
   <button class="commentBtn">Comment</button>
   <div class="comments">
+  ${console.log(post)}
     ${getCommentsHTML(post.comments)}
   </div>
   <hr>
@@ -217,8 +218,6 @@ function fetchUserById(userId) {
     .then((response) => response.json())
     .then((user) => {
       console.log(user);
-      // Handle the retrieved user data
-      // ...
     })
     .catch((error) => {
       console.error('Error:', error);
