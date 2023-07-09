@@ -248,25 +248,23 @@ app.get('/posts/user/:username', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch user posts' });
   }
 });
-app.get('/posts/user/:username', async (req, res) => {
-  const { username } = req.params;
+// Get user by ID
+app.get('/user/:userId', async (req, res) => {
+  const { userId } = req.params;
 
   try {
-    const user = await User.findOne({ _id: username });
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const posts = await Post.find({ user: user._id })
-      .populate('user', 'username')
-      .populate('comments', 'comment');
-
-    res.status(200).json(posts);
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to fetch user posts' });
+    res.status(500).json({ message: 'Failed to fetch user' });
   }
 });
+
 
 
 // Start the server
