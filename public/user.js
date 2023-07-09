@@ -202,7 +202,7 @@ function allpost() {
 async function getCommentsHTML(comments) {
   let html = '';
   for (const comment of comments) {
-    const user = await fetchUser(comment._id);
+    const user = await fetchUserById(comment._id);
     html += `
       <p>Comment: ${console.log(comment.comment)}</p>
       <p>Username: ${console.log(user.username)}</p>
@@ -212,12 +212,18 @@ async function getCommentsHTML(comments) {
 }
 
 // Fetch user data based on userId
-async function fetchUser(userId) {
-  const response = await fetch(`https://it-fu6m.onrender.com/user/${userId}`);
-  const data = await response.json();
-  return data;
+function fetchUserById(userId) {
+  fetch(`https://it-fu6m.onrender.com/user/${userId}`)
+    .then((response) => response.json())
+    .then((user) => {
+      console.log(user);
+      // Handle the retrieved user data
+      // ...
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 }
-
 // Function to like a post
 // function likePost(postId) {
 //   const user = username;
