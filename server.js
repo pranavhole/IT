@@ -1,4 +1,4 @@
-import express from "express";
+\import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
 import mongoose from "mongoose";
@@ -6,21 +6,8 @@ import bcrypt from 'bcrypt';
 import cors from 'cors';
 
 const app = express();
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  next();
-});
-
-const corsOptions = {
-  origin: '*',
-  methods: ['GET', 'POST','DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
-app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cors());
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://ITproject:ITproject@cluster0.bjoglyj.mongodb.net/', {
@@ -64,7 +51,6 @@ const Like = mongoose.model('Like', likeSchema);
 const Comment = mongoose.model('Comment', commentSchema);
 
 // Registration
-
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -74,7 +60,7 @@ app.post('/register', async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to register user', err });
+    res.status(500).json({ message: 'Failed to register user' });
   }
 });
 
@@ -101,6 +87,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Delete a post
 app.delete('/posts/:postId', async (req, res) => {
   const { postId } = req.params;
 
@@ -139,11 +126,11 @@ app.post('/posts/create', async (req, res) => {
     const savedPost = await newPost.save();
     res.status(200).json({ message: 'Post created successfully', post: savedPost });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create post', error });
+    res.status(500).json({ message: 'Failed to create post' });
   }
 });
 
-// Like a post
+// Like or unlike a post
 app.post('/posts/like/:postId', async (req, res) => {
   const { postId } = req.params;
   const { user } = req.body;
@@ -178,7 +165,6 @@ app.post('/posts/like/:postId', async (req, res) => {
   }
 });
 
-// Comment on 
 // Comment on a post
 app.post('/posts/comment/:postId', async (req, res) => {
   const { postId } = req.params;
@@ -198,13 +184,10 @@ app.post('/posts/comment/:postId', async (req, res) => {
     const newComment = new Comment({ user: foundUser._id, post: postId, comment });
     await newComment.save();
 
-    // Populate the comment with user details including username
-    await newComment.populate('user', 'username').execPopulate();
-
     post.comments.push(newComment);
     await post.save();
 
-    res.status(200).json({ message: 'Comment added successfully', comment: newComment });
+    res.status(200).json({ message: 'Comment added successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to add comment' });
@@ -216,18 +199,53 @@ app.get('/posts/all', async (req, res) => {
   try {
     const posts = await Post.find()
       .populate('user', 'username')
-      .populate({
-        path: 'comments',
-        populate: {
-          path: 'user',
-          select: 'username'
-        }
-      });
+      .populate('comments', 'comment');
 
     res.status(200).json(posts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to fetch posts' });
+  }
+});
+
+// Delete a user
+app.delete('/delete/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const deletedUser = await User.findOneAndDelete({ username });
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Delete related posts
+    await Post.deleteMany({ user: deletedUser._id });
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ message: 'Failed to delete user' });
+  }
+});
+
+// Get posts by username
+app.get('/posts/user/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const posts = await Post.find({ user: user._id })
+      .populate('user', 'username')
+      .populate('comments', 'comment');
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch user posts' });
   }
 });
 
